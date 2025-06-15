@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GraphStats</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0a;
+      color: #f8fafc;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .gradient-bg {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    }
+
+    .neu-card {
+      background: linear-gradient(145deg, #111113, #0d0d0f);
+      box-shadow: 8px 8px 16px #050506, 
+                  -8px -8px 16px #151517;
+      border-radius: 16px;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .neu-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 12px 12px 24px #050506, 
+                  -12px -12px 24px #151517;
+    }
+
+    .glow-effect {
+      position: relative;
+    }
+
+    .glow-effect::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: inherit;
+      background: radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .glow-effect:hover::after {
+      opacity: 1;
+    }
+
+    .animated-border {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .animated-border::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent,
+        transparent,
+        transparent,
+        var(--primary),
+        transparent,
+        transparent,
+        transparent
+      );
+      transform: rotate(0deg);
+      animation: borderRotate 6s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes borderRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .input-field {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    .nav-link {
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .floating {
+      animation: floating 6s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="fixed top-0 left-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-gray-900">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
+      <a href="#" class="text-2xl font-bold gradient-text animate__animated animate__fadeIn">GraphStats</a>
+      <div class="hidden md:flex space-x-8">
+        <a href="#projects" class="text-gray-300 hover:text-white nav-link">Projets</a>
+        <a href="#stack" class="text-gray-300 hover:text-white nav-link">Stack</a>
+        <a href="#contact" class="text-gray-300 hover:text-white nav-link">Contact</a>
+      </div>
+      <button class="md:hidden text-gray-300 hover:text-white" id="menu-toggle">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+    <div class="md:hidden px-6 py-4 hidden bg-black/90 backdrop-blur-lg" id="mobile-menu">
+      <a href="#projects" class="block text-gray-300 hover:text-white py-2 border-b border-gray-800">Projets</a>
+      <a href="#stack" class="block text-gray-300 hover:text-white py-2 border-b border-gray-800">Stack</a>
+      <a href="#contact" class="block text-gray-300 hover:text-white py-2">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="min-h-screen flex flex-col justify-center items-center px-6 text-center pt-20 relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
+      <div class="absolute top-20 left-20 w-64 h-64 rounded-full bg-purple-900/30 blur-3xl animate-pulse"></div>
+      <div class="absolute bottom-10 right-20 w-80 h-80 rounded-full bg-indigo-900/30 blur-3xl animate-pulse delay-300"></div>
+    </div>
+    
+    <div class="relative z-10 max-w-4xl" data-aos="fade-up">
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text animate__animated animate__fadeInDown">GraphStats</h1>
+      <p class="text-xl text-gray-300 mt-6 max-w-2xl mx-auto leading-relaxed">
+        Passionné par les <span class="font-semibold text-white">stats YouTube</span>, les interfaces <span class="font-semibold text-white">dynamiques</span> et les données en <span class="font-semibold text-white">temps réel</span>.
+        Je crée des expériences web modernes avec des technologies performantes.
+      </p>
+      <div class="mt-10 flex justify-center gap-4">
+        <a href="#projects" class="px-8 py-3 rounded-full gradient-bg text-white font-medium hover:shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 transform hover:scale-105">
+          Voir mes projets
+        </a>
+        <a href="#contact" class="px-8 py-3 rounded-full border border-gray-700 text-gray-300 font-medium hover:bg-gray-900/50 hover:text-white transition-all duration-300">
+          Me contacter
+        </a>
+      </div>
+    </div>
+    
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- Projets -->
+  <section class="px-6 py-24 relative" id="projects">
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute top-0 left-1/4 w-96 h-96 bg-indigo-900/10 rounded-full filter blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto relative">
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text" data-aos="fade-up">Mes projets</h2>
+      <p class="text-xl text-gray-400 max-w-3xl mx-auto text-center mb-16" data-aos="fade-up" data-aos-delay="100">
+        Découvrez mes réalisations qui combinent design moderne et fonctionnalités avancées.
+      </p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Projet Card -->
+        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="200">
+          <h3 class="text-xl font-semibold mb-2 text-white">FastCount</h3>
+          <p class="text-gray-400 mb-4">Compteur d'abonnés YouTube en temps réel avec interface futuriste et animations fluides.</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API YouTube</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+          </div>
+          <a href="https://fast-count.vercel.app/" target="_blank" 
+             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
+            Voir le projet
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+        
+        <!-- Projet Card -->
+        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="400">
+          <h3 class="text-xl font-semibold mb-2 text-white">Graphy Host</h3>
+          <p class="text-gray-400 mb-4">Un hébergeur gratuit à vie, conçu avec CSS, HTML, JS et Node.js.</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">CSS</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">HTML</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">Node.js</span>
+          </div>
+          <a href="http://31.59.235.2:8010/" target="_blank" 
+             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
+            Voir le projet
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Projet Card -->
+        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="600">
+          <h3 class="text-xl font-semibold mb-2 text-white">FastCount 2</h3>
+          <p class="text-gray-400 mb-4">Nouvelle version améliorée du compteur d'abonnés YouTube avec des fonctionnalités supplémentaires.</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API YouTube</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+          </div>
+          <a href="https://fastcount-2-beta.vercel.app/" target="_blank" 
+             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
+            Voir le projet
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Projet Card -->
+        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="800">
+          <h3 class="text-xl font-semibold mb-2 text-white">IPV6 Detector</h3>
+          <p class="text-gray-400 mb-4">Application permettant de détecter et d'afficher les informations sur les adresses IPv6.</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">HTML</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">CSS</span>
+          </div>
+          <a href="https://ipv6-detector-lunaria.vercel.app/" target="_blank" 
+             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
+            Voir le projet
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Projet Card -->
+        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="1000">
+          <h3 class="text-xl font-semibold mb-2 text-white">MrBeast Counter</h3>
+          <p class="text-gray-400 mb-4">Compteur en temps réel des abonnés de MrBeast avec une interface moderne et fluide.</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API YouTube</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+          </div>
+          <a href="https://mrbeast-count.vercel.app/" target="_blank" 
+             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
+            Voir le projet
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Projet Card -->
+        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="1200">
+          <h3 class="text-xl font-semibold mb-2 text-white">444 Count</h3>
+          <p class="text-gray-400 mb-4">Un site pour voir le nombre de followers en temps réel avec une interface élégante.</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+          </div>
+          <a href="https://444-count.vercel.app/" target="_blank" 
+             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
+            Voir le projet
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Projet Card -->
+        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="1400">
+          <h3 class="text-xl font-semibold mb-2 text-white">MrBeast Latest Video</h3>
+          <p class="text-gray-400 mb-4">Statistiques en temps réel sur la dernière vidéo de MrBeast avec une interface intuitive.</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API YouTube</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+          </div>
+          <a href="https://mr-beast-latest-video-statify.vercel.app/" target="_blank" 
+             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
+            Voir le projet
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Projet Card -->
+        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="1600">
+          <h3 class="text-xl font-semibold mb-2 text-white">MrBeast Latest Short</h3>
+          <p class="text-gray-400 mb-4">Statistiques en temps réel sur le dernier short de MrBeast avec une interface intuitive.</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API YouTube</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+          </div>
+          <a href="https://mr-beast-latest-short-statify.vercel.app/" target="_blank" 
+             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
+            Voir le projet
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Projet Card -->
+        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="1800">
+          <h3 class="text-xl font-semibold mb-2 text-white">Fast Count Status</h3>
+          <p class="text-gray-400 mb-4">Statut en temps réel pour Fast Count avec une interface claire et réactive.</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+          </div>
+          <a href="https://fast-count-status.vercel.app/" target="_blank" 
+             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
+            Voir le projet
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Projet Card -->
+        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="2000">
+          <h3 class="text-xl font-semibold mb-2 text-white">Top 50 Customizable</h3>
+          <p class="text-gray-400 mb-4">Un top 50 personnalisable avec une interface intuitive et moderne.</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+          </div>
+          <a href="https://top-50-fysc.vercel.app/" target="_blank" 
+             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
+            Voir le projet
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Projet Card -->
+        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="2200">
+          <h3 class="text-xl font-semibold mb-2 text-white">GraphStats YouTube Channel</h3>
+          <p class="text-gray-400 mb-4">Découvrez ma chaîne YouTube dédiée aux statistiques et aux projets innovants.</p>
+          <div class="flex flex-wrap gap-2 mb-4">
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">YouTube</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">Statistiques</span>
+            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">Projets</span>
+          </div>
+          <a href="https://www.youtube.com/@GraphStats-Official" target="_blank" 
+             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
+            Voir la chaîne
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stack -->
+  <section class="px-6 py-24 bg-gradient-to-b from-black to-gray-900/50" id="stack">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text" data-aos="fade-up">Ma stack technique</h2>
+      <p class="text-xl text-gray-400 max-w-3xl mx-auto text-center mb-16" data-aos="fade-up" data-aos-delay="100">
+        Les technologies que j'utilise pour créer des expériences modernes et performantes.
+      </p>
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" data-aos="fade-up">
+        <!-- Tech Item -->
+        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+          <div class="w-16 h-16 mb-4 flex items-center justify-center">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" class="w-full h-full">
+          </div>
+          <span class="text-white font-medium">HTML5</span>
+        </div>
+        
+        <!-- Tech Item -->
+        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+          <div class="w-16 h-16 mb-4 flex items-center justify-center">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" class="w-full h-full">
+          </div>
+          <span class="text-white font-medium">CSS3</span>
+        </div>
+        
+        <!-- Tech Item -->
+        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+          <div class="w-16 h-16 mb-4 flex items-center justify-center">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="w-full h-full">
+          </div>
+          <span class="text-white font-medium">JavaScript</span>
+        </div>
+        
+        <!-- Tech Item -->
+        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+          <div class="w-16 h-16 mb-4 flex items-center justify-center">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" class="w-full h-full">
+          </div>
+          <span class="text-white font-medium">Node.js</span>
+        </div>
+        
+        <!-- Tech Item -->
+        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+          <div class="w-16 h-16 mb-4 flex items-center justify-center">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" class="w-full h-full">
+          </div>
+          <span class="text-white font-medium">Python</span>
+        </div>
+        
+        <!-- Tech Item -->
+        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+          <div class="w-16 h-16 mb-4 flex items-center justify-center">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg" alt="Tailwind CSS" class="w-full h-full">
+          </div>
+          <span class="text-white font-medium">Tailwind CSS</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="px-6 py-24 relative overflow-hidden" id="contact">
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/10 to-black/80"></div>
+    
+    <div class="max-w-4xl mx-auto relative">
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text" data-aos="fade-up">Contactez-moi</h2>
+      <p class="text-xl text-gray-400 max-w-2xl mx-auto text-center mb-16" data-aos="fade-up" data-aos-delay="100">
+        Vous avez un projet ou une question ? Envoyez-moi un message et je vous répondrai rapidement.
+      </p>
+      
+      <form class="neu-card p-8 glow-effect" data-aos="fade-up" data-aos-delay="200">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Votre nom</label>
+            <input type="text" id="name" class="w-full px-4 py-3 rounded-lg input-field border border-gray-800 focus:border-indigo-500 outline-none text-white" required>
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Votre email</label>
+            <input type="email" id="email" class="w-full px-4 py-3 rounded-lg input-field border border-gray-800 focus:border-indigo-500 outline-none text-white" required>
+          </div>
+        </div>
+        <div class="mb-6">
+          <label for="subject" class="block text-sm font-medium text-gray-300 mb-2">Sujet</label>
+          <input type="text" id="subject" class="w-full px-4 py-3 rounded-lg input-field border border-gray-800 focus:border-indigo-500 outline-none text-white" required>
+        </div>
+        <div class="mb-6">
+          <label for="message" class="block text-sm font-medium text-gray-300 mb-2">Votre message</label>
+          <textarea id="message" rows="5" class="w-full px-4 py-3 rounded-lg input-field border border-gray-800 focus:border-indigo-500 outline-none text-white" required></textarea>
+        </div>
+        <button type="submit" class="w-full py-4 rounded-lg gradient-bg text-white font-medium hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-[1.02]">
+          Envoyer le message
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="px-6 py-12 border-t border-gray-900 bg-black/50">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-6 md:mb-0">
+          <a href="#" class="text-2xl font-bold gradient-text">GraphStats</a>
+          <p class="text-gray-500 mt-2">Créateur d'expériences web basées sur les données.</p>
+        </div>
+        
+        <div class="flex space-x-6">
+          <a href="https://github.com/GraphStats" target="_blank" class="text-gray-400 hover:text-white transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      
+      <div class="mt-12 pt-8 border-t border-gray-900 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-500 text-sm mb-4 md:mb-0">
+          © 2025 GraphStats. Tous droits réservés.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      once: true,
+      duration: 800,
+      easing: 'ease-out-quart'
+    });
+    
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      mobileMenu.classList.toggle('animate__fadeInDown');
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        if(this.getAttribute('href') === '#') return;
+        
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+        
+        // Close mobile menu if open
+        if(!mobileMenu.classList.contains('hidden')) {
+          mobileMenu.classList.add('hidden');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
