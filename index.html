@@ -141,72 +141,108 @@
       50% { transform: translateY(-12px); }
     }
   </style>
+  <script>
+  const translations = {
+    fr: {
+      navProjects: "Projets",
+      navStack: "Stack",
+      navContact: "Contact",
+      heroTitle: "GraphStats",
+      heroDescription: "Passionné par les <span class='font-semibold text-white'>stats YouTube</span>, les interfaces <span class='font-semibold text-white'>dynamiques</span> et les données en <span class='font-semibold text-white'>temps réel</span>. Je crée des expériences web modernes avec des technologies performantes.",
+      heroProjects: "Voir mes projets",
+      heroContact: "Me contacter",
+      projectsTitle: "Mes projets",
+      projectsDescription: "Découvrez mes réalisations qui combinent design moderne et fonctionnalités avancées.",
+      contactTitle: "Contactez-moi",
+      contactDescription: "Vous avez un projet ou une question ? Envoyez-moi un message et je vous répondrai rapidement.",
+      contactName: "Votre nom",
+      contactEmail: "Votre email",
+      contactSubject: "Sujet",
+      contactMessage: "Votre message",
+      contactButton: "Envoyer le message",
+      footerText: "Créateur d'expériences web basées sur les données.",
+    },
+    en: {
+      navProjects: "Projects",
+      navStack: "Stack",
+      navContact: "Contact",
+      heroTitle: "GraphStats",
+      heroDescription: "Passionate about <span class='font-semibold text-white'>YouTube stats</span>, <span class='font-semibold text-white'>dynamic</span> interfaces, and <span class='font-semibold text-white'>real-time</span> data. I create modern web experiences with high-performance technologies.",
+      heroProjects: "View my projects",
+      heroContact: "Contact me",
+      projectsTitle: "My Projects",
+      projectsDescription: "Discover my work that combines modern design and advanced features.",
+      contactTitle: "Contact Me",
+      contactDescription: "Do you have a project or a question? Send me a message, and I'll respond quickly.",
+      contactName: "Your Name",
+      contactEmail: "Your Email",
+      contactSubject: "Subject",
+      contactMessage: "Your Message",
+      contactButton: "Send Message",
+      footerText: "Creator of data-driven web experiences.",
+    },
+  };
+
+  function switchLanguage(lang) {
+    document.querySelector("[data-nav-projects]").textContent = translations[lang].navProjects;
+    document.querySelector("[data-nav-stack]").textContent = translations[lang].navStack;
+    document.querySelector("[data-nav-contact]").textContent = translations[lang].navContact;
+    document.querySelector("[data-hero-title]").textContent = translations[lang].heroTitle;
+    document.querySelector("[data-hero-description]").innerHTML = translations[lang].heroDescription;
+    document.querySelector("[data-hero-projects]").textContent = translations[lang].heroProjects;
+    document.querySelector("[data-hero-contact]").textContent = translations[lang].heroContact;
+    document.querySelector("[data-projects-title]").textContent = translations[lang].projectsTitle;
+    document.querySelector("[data-projects-description]").textContent = translations[lang].projectsDescription;
+    document.querySelector("[data-contact-title]").textContent = translations[lang].contactTitle;
+    document.querySelector("[data-contact-description]").textContent = translations[lang].contactDescription;
+    document.querySelector("[data-contact-name]").textContent = translations[lang].contactName;
+    document.querySelector("[data-contact-email]").textContent = translations[lang].contactEmail;
+    document.querySelector("[data-contact-subject]").textContent = translations[lang].contactSubject;
+    document.querySelector("[data-contact-message]").textContent = translations[lang].contactMessage;
+    document.querySelector("[data-contact-button]").textContent = translations[lang].contactButton;
+    document.querySelector("[data-footer-text]").textContent = translations[lang].footerText;
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const defaultLang = "fr"; // Default language
+    switchLanguage(defaultLang);
+  });
+  </script>
 </head>
 <body>
-
   <!-- Navigation Bar -->
   <nav class="fixed top-0 left-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-gray-900">
     <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
       <a href="#" class="text-2xl font-bold gradient-text animate__animated animate__fadeIn">GraphStats</a>
       <div class="hidden md:flex space-x-8">
-        <a href="#projects" class="text-gray-300 hover:text-white nav-link">Projets</a>
-        <a href="#stack" class="text-gray-300 hover:text-white nav-link">Stack</a>
-        <a href="#contact" class="text-gray-300 hover:text-white nav-link">Contact</a>
+        <a href="#projects" class="text-gray-300 hover:text-white nav-link" data-nav-projects></a>
+        <a href="#stack" class="text-gray-300 hover:text-white nav-link" data-nav-stack></a>
+        <a href="#contact" class="text-gray-300 hover:text-white nav-link" data-nav-contact></a>
       </div>
-      <button class="md:hidden text-gray-300 hover:text-white" id="menu-toggle">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-    </div>
-    <div class="md:hidden px-6 py-4 hidden bg-black/90 backdrop-blur-lg" id="mobile-menu">
-      <a href="#projects" class="block text-gray-300 hover:text-white py-2 border-b border-gray-800">Projets</a>
-      <a href="#stack" class="block text-gray-300 hover:text-white py-2 border-b border-gray-800">Stack</a>
-      <a href="#contact" class="block text-gray-300 hover:text-white py-2">Contact</a>
+      <div class="flex items-center space-x-4">
+        <button onclick="switchLanguage('fr')" class="text-gray-300 hover:text-white">FR</button>
+        <button onclick="switchLanguage('en')" class="text-gray-300 hover:text-white">EN</button>
+      </div>
     </div>
   </nav>
 
-  <!-- Hero -->
+  <!-- Hero Section -->
   <section class="min-h-screen flex flex-col justify-center items-center px-6 text-center pt-20 relative overflow-hidden">
-    <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-      <div class="absolute top-20 left-20 w-64 h-64 rounded-full bg-purple-900/30 blur-3xl animate-pulse"></div>
-      <div class="absolute bottom-10 right-20 w-80 h-80 rounded-full bg-indigo-900/30 blur-3xl animate-pulse delay-300"></div>
-    </div>
-    
     <div class="relative z-10 max-w-4xl" data-aos="fade-up">
-      <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text animate__animated animate__fadeInDown">GraphStats</h1>
-      <p class="text-xl text-gray-300 mt-6 max-w-2xl mx-auto leading-relaxed">
-        Passionné par les <span class="font-semibold text-white">stats YouTube</span>, les interfaces <span class="font-semibold text-white">dynamiques</span> et les données en <span class="font-semibold text-white">temps réel</span>.
-        Je crée des expériences web modernes avec des technologies performantes.
-      </p>
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text animate__animated animate__fadeInDown" data-hero-title></h1>
+      <p class="text-xl text-gray-300 mt-6 max-w-2xl mx-auto leading-relaxed" data-hero-description></p>
       <div class="mt-10 flex justify-center gap-4">
-        <a href="#projects" class="px-8 py-3 rounded-full gradient-bg text-white font-medium hover:shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 transform hover:scale-105">
-          Voir mes projets
-        </a>
-        <a href="#contact" class="px-8 py-3 rounded-full border border-gray-700 text-gray-300 font-medium hover:bg-gray-900/50 hover:text-white transition-all duration-300">
-          Me contacter
-        </a>
+        <a href="#projects" class="px-8 py-3 rounded-full gradient-bg text-white font-medium hover:shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 transform hover:scale-105" data-hero-projects></a>
+        <a href="#contact" class="px-8 py-3 rounded-full border border-gray-700 text-gray-300 font-medium hover:bg-gray-900/50 hover:text-white transition-all duration-300" data-hero-contact></a>
       </div>
-    </div>
-    
-    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-      </svg>
     </div>
   </section>
 
-  <!-- Projets -->
+  <!-- Projects Section -->
   <section class="px-6 py-24 relative" id="projects">
-    <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute top-0 left-1/4 w-96 h-96 bg-indigo-900/10 rounded-full filter blur-3xl"></div>
-    </div>
-    
     <div class="max-w-7xl mx-auto relative">
-      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text" data-aos="fade-up">Mes projets</h2>
-      <p class="text-xl text-gray-400 max-w-3xl mx-auto text-center mb-16" data-aos="fade-up" data-aos-delay="100">
-        Découvrez mes réalisations qui combinent design moderne et fonctionnalités avancées.
-      </p>
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text" data-projects-title></h2>
+      <p class="text-xl text-gray-400 max-w-3xl mx-auto text-center mb-16" data-projects-description></p>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <!-- Projet Card -->
@@ -476,33 +512,29 @@
     <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/10 to-black/80"></div>
     
     <div class="max-w-4xl mx-auto relative">
-      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text" data-aos="fade-up">Contactez-moi</h2>
-      <p class="text-xl text-gray-400 max-w-2xl mx-auto text-center mb-16" data-aos="fade-up" data-aos-delay="100">
-        Vous avez un projet ou une question ? Envoyez-moi un message et je vous répondrai rapidement.
-      </p>
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text" data-aos="fade-up" data-contact-title></h2>
+      <p class="text-xl text-gray-400 max-w-2xl mx-auto text-center mb-16" data-aos="fade-up" data-aos-delay="100" data-contact-description></p>
       
       <form class="neu-card p-8 glow-effect" data-aos="fade-up" data-aos-delay="200">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Votre nom</label>
+            <label for="name" class="block text-sm font-medium text-gray-300 mb-2" data-contact-name></label>
             <input type="text" id="name" class="w-full px-4 py-3 rounded-lg input-field border border-gray-800 focus:border-indigo-500 outline-none text-white" required>
           </div>
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Votre email</label>
+            <label for="email" class="block text-sm font-medium text-gray-300 mb-2" data-contact-email></label>
             <input type="email" id="email" class="w-full px-4 py-3 rounded-lg input-field border border-gray-800 focus:border-indigo-500 outline-none text-white" required>
           </div>
         </div>
         <div class="mb-6">
-          <label for="subject" class="block text-sm font-medium text-gray-300 mb-2">Sujet</label>
+          <label for="subject" class="block text-sm font-medium text-gray-300 mb-2" data-contact-subject></label>
           <input type="text" id="subject" class="w-full px-4 py-3 rounded-lg input-field border border-gray-800 focus:border-indigo-500 outline-none text-white" required>
         </div>
         <div class="mb-6">
-          <label for="message" class="block text-sm font-medium text-gray-300 mb-2">Votre message</label>
+          <label for="message" class="block text-sm font-medium text-gray-300 mb-2" data-contact-message></label>
           <textarea id="message" rows="5" class="w-full px-4 py-3 rounded-lg input-field border border-gray-800 focus:border-indigo-500 outline-none text-white" required></textarea>
         </div>
-        <button type="submit" class="w-full py-4 rounded-lg gradient-bg text-white font-medium hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-[1.02]">
-          Envoyer le message
-        </button>
+        <button type="submit" class="w-full py-4 rounded-lg gradient-bg text-white font-medium hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 transform hover:scale-[1.02]" data-contact-button></button>
       </form>
     </div>
   </section>
@@ -513,7 +545,7 @@
       <div class="flex flex-col md:flex-row justify-between items-center">
         <div class="mb-6 md:mb-0">
           <a href="#" class="text-2xl font-bold gradient-text">GraphStats</a>
-          <p class="text-gray-500 mt-2">Créateur d'expériences web basées sur les données.</p>
+          <p class="text-gray-500 mt-2" data-footer-text></p>
         </div>
         
         <div class="flex space-x-6">
