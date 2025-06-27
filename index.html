@@ -226,6 +226,13 @@
     </div>
   </nav>
 
+  <!-- DND & Age Display -->
+  <div id="dnd-age-info" class="fixed top-20 right-4 bg-black/80 text-white rounded-lg shadow-lg px-6 py-4 z-50 text-sm font-mono animate__animated animate__fadeIn" style="min-width:260px">
+    <div><b>Online</b></div>
+    <div id="current-time"></div>
+    <div id="age-info"></div>
+  </div>
+
   <!-- Hero Section -->
   <section class="min-h-screen flex flex-col justify-center items-center px-6 text-center pt-20 relative overflow-hidden">
     <div class="relative z-10 max-w-4xl" data-aos="fade-up">
@@ -622,14 +629,6 @@
       easing: 'ease-out-quart'
     });
     
-    const menuToggle = document.getElementById('menu-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
-    
-    menuToggle.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-      mobileMenu.classList.toggle('animate__fadeInDown');
-    });
-    
     // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
@@ -647,6 +646,41 @@
         }
       });
     });
-  </script>
+
+    // DND & Age Real-Time Update
+    // Set your birth date here (YYYY-MM-DDTHH:MM:SS)
+    const birthDate = new Date("2010-08-10T02:40:00");
+
+    function pad(n) { return n.toString().padStart(2, '0'); }
+
+    function updateDndAge() {
+      const now = new Date();
+      // UTC+1
+      const utc1 = new Date(now.getTime() + 60 * 60 * 1000);
+      // Format: June 28, 2025, 5:55:43
+      const monthsEn = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      const day = utc1.getDate();
+      const month = monthsEn[utc1.getMonth()];
+      const year = utc1.getFullYear();
+      const h = pad(utc1.getHours());
+      const m = pad(utc1.getMinutes());
+      const s = pad(utc1.getSeconds());
+      document.getElementById('current-time').textContent = `my time (UTC+1): ${month} ${day}, ${year}, ${h}:${m}:${s}`;
+
+      // Age calculation (still based on real UTC time)
+      let diff = now - birthDate;
+      let ageDate = new Date(diff);
+      let years = ageDate.getUTCFullYear() - 1970;
+      let days = Math.floor(diff / (1000*60*60*24) - years*365.2425);
+      let hours = ageDate.getUTCHours();
+      let minutes = ageDate.getUTCMinutes();
+      let seconds = ageDate.getUTCSeconds();
+      document.getElementById('age-info').textContent =
+        `age: ${years} years, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    }
+
+    setInterval(updateDndAge, 1000);
+    updateDndAge();
+    </script>
 </body>
 </html>
