@@ -662,7 +662,7 @@
     };
 
     // Update Discord status in the DOM
-    function updateDiscordStatus(status) {
+    function updateDiscordStatus(status, customStatus) {
       const dndDiv = document.getElementById('dnd-status');
       let color = statusColors[status] || "#64748b";
       let label = status;
@@ -671,10 +671,14 @@
       else if (status === "idle") label = "Idle";
       else if (status === "offline") label = "Offline";
       else label = status;
-      dndDiv.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;">
+      let html = `<span style="display:inline-flex;align-items:center;gap:6px;">
         <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color};"></span>
         <b>${label}</b>
       </span>`;
+      if (customStatus) {
+        html += `<div style="margin-top:2px;color:#a5b4fc;font-size:13px;word-break:break-word;">${customStatus}</div>`;
+      }
+      dndDiv.innerHTML = html;
     }
 
     // Fetch Discord status from Lanyard API
@@ -682,8 +686,14 @@
       try {
         const res = await fetch('https://api.lanyard.rest/v1/users/1349053338364416020');
         const data = await res.json();
-        if (data && data.success && data.data && data.data.discord_status) {
-          updateDiscordStatus(data.data.discord_status);
+        let customStatus = null;
+        if (data && data.success && data.data) {
+          // Find activity of type 4 (custom status)
+          if (Array.isArray(data.data.activities)) {
+            const custom = data.data.activities.find(a => a.type === 4 && a.state);
+            if (custom && custom.state) customStatus = custom.state;
+          }
+          updateDiscordStatus(data.data.discord_status, customStatus);
         } else {
           updateDiscordStatus("offline");
         }
