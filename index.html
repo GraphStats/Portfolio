@@ -228,7 +228,7 @@
 
   <!-- DND & Age Display -->
   <div id="dnd-age-info" class="fixed top-20 right-4 bg-black/80 text-white rounded-lg shadow-lg px-6 py-4 z-50 text-sm font-mono animate__animated animate__fadeIn" style="min-width:260px">
-    <div><b>Online</b></div>
+    <div id="dnd-status"></div>
     <div id="current-time"></div>
     <div id="age-info"></div>
   </div>
@@ -653,6 +653,50 @@
 
     function pad(n) { return n.toString().padStart(2, '0'); }
 
+    // Discord status color mapping
+    const statusColors = {
+      online: "#22c55e",   // green
+      dnd: "#ef4444",      // red
+      idle: "#f59e42",     // orange
+      offline: "#64748b"   // gray
+    };
+
+    // Update Discord status in the DOM
+    function updateDiscordStatus(status) {
+      const dndDiv = document.getElementById('dnd-status');
+      let color = statusColors[status] || "#64748b";
+      let label = status;
+      if (status === "dnd") label = "Do Not Disturb";
+      else if (status === "online") label = "Online";
+      else if (status === "idle") label = "Idle";
+      else if (status === "offline") label = "Offline";
+      else label = status;
+      dndDiv.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;">
+        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color};"></span>
+        <b>${label}</b>
+      </span>`;
+    }
+
+    // Fetch Discord status from Lanyard API
+    async function fetchDiscordStatus() {
+      try {
+        const res = await fetch('https://api.lanyard.rest/v1/users/1349053338364416020');
+        const data = await res.json();
+        if (data && data.success && data.data && data.data.discord_status) {
+          updateDiscordStatus(data.data.discord_status);
+        } else {
+          updateDiscordStatus("offline");
+        }
+      } catch {
+        updateDiscordStatus("offline");
+      }
+    }
+
+    // Call every 2 seconds
+    setInterval(fetchDiscordStatus, 2000);
+    // Initial call
+    fetchDiscordStatus();
+
     function updateDndAge() {
       const now = new Date();
       // UTC+1
@@ -683,4 +727,5 @@
     updateDndAge();
     </script>
 </body>
+</html>
 </html>
