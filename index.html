@@ -34,102 +34,74 @@
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     }
 
-    .neu-card {
-      background: linear-gradient(145deg, #111113, #0d0d0f);
-      box-shadow: 8px 8px 16px #050506, 
-                  -8px -8px 16px #151517;
+    .glass-card {
+      background: rgba(15, 15, 17, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-radius: 16px;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .neu-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 12px 12px 24px #050506, 
-                  -12px -12px 24px #151517;
+    .glass-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.15);
+      border-color: rgba(99, 102, 241, 0.3);
     }
 
     .glow-effect {
       position: relative;
+      overflow: hidden;
     }
 
-    .glow-effect::after {
+    .glow-effect::before {
       content: '';
       position: absolute;
       top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border-radius: inherit;
-      background: radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(99, 102, 241, 0.1),
+        transparent
+      );
+      transition: all 0.6s ease;
     }
 
-    .glow-effect:hover::after {
-      opacity: 1;
+    .glow-effect:hover::before {
+      left: 100%;
     }
 
     .animated-border {
       position: relative;
-      overflow: hidden;
     }
 
-    .animated-border::before {
+    .animated-border::after {
       content: '';
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        to bottom right,
-        transparent,
-        transparent,
-        transparent,
-        var(--primary),
-        transparent,
-        transparent,
-        transparent
-      );
-      transform: rotate(0deg);
-      animation: borderRotate 6s linear infinite;
-      z-index: -1;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      transition: width 0.4s ease;
     }
 
-    @keyframes borderRotate {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .animated-border:hover::after {
+      width: 100%;
     }
 
     .input-field {
       background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(5px);
       transition: all 0.3s ease;
     }
 
     .input-field:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
-    }
-
-    .nav-link {
-      position: relative;
-    }
-
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--primary);
-      transition: width 0.3s ease;
-    }
-
-    .nav-link:hover::after {
-      width: 100%;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
     }
 
     .floating {
@@ -139,6 +111,47 @@
     @keyframes floating {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-12px); }
+    }
+
+    .pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .text-gradient {
+      background: linear-gradient(90deg, #f8fafc, #cbd5e1);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .bg-grid {
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    .fade-in {
+      animation: fadeIn 1s ease-in forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .scale-in {
+      animation: scaleIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
   </style>
   <script>
@@ -206,41 +219,61 @@
   document.addEventListener("DOMContentLoaded", () => {
     const defaultLang = "fr";
     switchLanguage(defaultLang);
+    
+    // Add animated elements
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    elements.forEach(el => observer.observe(el));
   });
   </script>
 </head>
-<body>
+<body class="bg-grid">
   <!-- Navigation Bar -->
   <nav class="fixed top-0 left-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-gray-900">
     <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
       <a href="#" class="text-2xl font-bold gradient-text animate__animated animate__fadeIn">GraphStats</a>
       <div class="hidden md:flex space-x-8">
-        <a href="#projects" class="text-gray-300 hover:text-white nav-link" data-nav-projects></a>
-        <a href="#stack" class="text-gray-300 hover:text-white nav-link" data-nav-stack></a>
-        <a href="#contact" class="text-gray-300 hover:text-white nav-link" data-nav-contact></a>
+        <a href="#projects" class="text-gray-300 hover:text-white animated-border py-2" data-nav-projects></a>
+        <a href="#stack" class="text-gray-300 hover:text-white animated-border py-2" data-nav-stack></a>
+        <a href="#contact" class="text-gray-300 hover:text-white animated-border py-2" data-nav-contact></a>
       </div>
       <div class="flex items-center space-x-4">
-        <button onclick="switchLanguage('fr')" class="text-gray-300 hover:text-white">FR</button>
-        <button onclick="switchLanguage('en')" class="text-gray-300 hover:text-white">EN</button>
+        <button onclick="switchLanguage('fr')" class="text-gray-300 hover:text-white transition">FR</button>
+        <span class="text-gray-600">|</span>
+        <button onclick="switchLanguage('en')" class="text-gray-300 hover:text-white transition">EN</button>
       </div>
     </div>
   </nav>
 
-  <!-- DND & Age Display -->
-  <div id="dnd-age-info" class="fixed top-20 right-4 bg-black/80 text-white rounded-lg shadow-lg px-6 py-4 z-50 text-sm font-mono animate__animated animate__fadeIn" style="min-width:260px">
-    <div id="dnd-status"></div>
-    <div id="current-time"></div>
-    <div id="age-info"></div>
-  </div>
-
   <!-- Hero Section -->
   <section class="min-h-screen flex flex-col justify-center items-center px-6 text-center pt-20 relative overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-indigo-900/30 blur-3xl animate-pulse"></div>
+      <div class="absolute bottom-1/3 right-1/3 w-80 h-80 rounded-full bg-indigo-800/20 blur-3xl animate-pulse delay-500"></div>
+    </div>
+    
     <div class="relative z-10 max-w-4xl" data-aos="fade-up">
       <h1 class="text-5xl md:text-7xl font-bold mb-6 gradient-text animate__animated animate__fadeInDown" data-hero-title></h1>
       <p class="text-xl text-gray-300 mt-6 max-w-2xl mx-auto leading-relaxed" data-hero-description></p>
-      <div class="mt-10 flex justify-center gap-4">
+      <div class="mt-10 flex justify-center gap-4 animate-on-scroll">
         <a href="#projects" class="px-8 py-3 rounded-full gradient-bg text-white font-medium hover:shadow-lg hover:shadow-indigo-500/20 transition-all duration-300 transform hover:scale-105" data-hero-projects></a>
         <a href="#contact" class="px-8 py-3 rounded-full border border-gray-700 text-gray-300 font-medium hover:bg-gray-900/50 hover:text-white transition-all duration-300" data-hero-contact></a>
+      </div>
+    </div>
+    
+    <div class="absolute bottom-10 left-0 right-0 flex justify-center animate-on-scroll">
+      <div class="animate-bounce">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
       </div>
     </div>
   </section>
@@ -248,18 +281,18 @@
   <!-- Projects Section -->
   <section class="px-6 py-24 relative" id="projects">
     <div class="max-w-7xl mx-auto relative">
-      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text" data-projects-title></h2>
-      <p class="text-xl text-gray-400 max-w-3xl mx-auto text-center mb-16" data-projects-description></p>
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text animate-on-scroll" data-projects-title></h2>
+      <p class="text-xl text-gray-400 max-w-3xl mx-auto text-center mb-16 animate-on-scroll" data-projects-description></p>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Projet Card -->
-        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="200">
+        <!-- Project Card -->
+        <div class="glass-card p-6 glow-effect animate-on-scroll" data-aos="fade-up" data-aos-delay="200">
           <h3 class="text-xl font-semibold mb-2 text-white">FastCount</h3>
           <p class="text-gray-400 mb-4">Compteur d'abonnés YouTube en temps réel avec interface futuriste et animations fluides.</p>
           <div class="flex flex-wrap gap-2 mb-4">
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API YouTube</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">API YouTube</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">UI/UX</span>
           </div>
           <a href="https://fast-count.vercel.app/" target="_blank" 
              class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
@@ -270,15 +303,15 @@
           </a>
         </div>
         
-        <!-- Projet Card -->
-        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="400">
+        <!-- Project Card -->
+        <div class="glass-card p-6 glow-effect animate-on-scroll" data-aos="fade-up" data-aos-delay="400">
           <h3 class="text-xl font-semibold mb-2 text-white">Graphy Host</h3>
           <p class="text-gray-400 mb-4">Un hébergeur gratuit à vie, conçu avec CSS, HTML, JS et Node.js.</p>
           <div class="flex flex-wrap gap-2 mb-4">
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">CSS</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">HTML</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">Node.js</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">CSS</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">HTML</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">Node.js</span>
           </div>
           <a href="http://31.59.235.30:8010/" target="_blank" 
              class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
@@ -289,14 +322,14 @@
           </a>
         </div>
 
-        <!-- Projet Card -->
-        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="600">
+        <!-- Project Card -->
+        <div class="glass-card p-6 glow-effect animate-on-scroll" data-aos="fade-up" data-aos-delay="600">
           <h3 class="text-xl font-semibold mb-2 text-white">FastCount 2</h3>
           <p class="text-gray-400 mb-4">Nouvelle version améliorée du compteur d'abonnés YouTube avec des fonctionnalités supplémentaires.</p>
           <div class="flex flex-wrap gap-2 mb-4">
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API YouTube</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">API YouTube</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">UI/UX</span>
           </div>
           <a href="https://fastcount-2-beta.vercel.app/" target="_blank" 
              class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
@@ -307,14 +340,14 @@
           </a>
         </div>
 
-        <!-- Projet Card -->
-        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="800">
+        <!-- Project Card -->
+        <div class="glass-card p-6 glow-effect animate-on-scroll" data-aos="fade-up" data-aos-delay="800">
           <h3 class="text-xl font-semibold mb-2 text-white">IPV6 Detector</h3>
           <p class="text-gray-400 mb-4">Application permettant de détecter et d'afficher les informations sur les adresses IPv6.</p>
           <div class="flex flex-wrap gap-2 mb-4">
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">HTML</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">CSS</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">HTML</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">CSS</span>
           </div>
           <a href="https://ipv6-detector-lunaria.vercel.app/" target="_blank" 
              class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
@@ -325,14 +358,14 @@
           </a>
         </div>
 
-        <!-- Projet Card -->
-        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="1000">
+        <!-- Project Card -->
+        <div class="glass-card p-6 glow-effect animate-on-scroll" data-aos="fade-up" data-aos-delay="1000">
           <h3 class="text-xl font-semibold mb-2 text-white">MrBeast Counter</h3>
           <p class="text-gray-400 mb-4">Compteur en temps réel des abonnés de MrBeast avec une interface moderne et fluide.</p>
           <div class="flex flex-wrap gap-2 mb-4">
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API YouTube</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">API YouTube</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">UI/UX</span>
           </div>
           <a href="https://mrbeast-count.vercel.app/" target="_blank" 
              class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
@@ -343,14 +376,14 @@
           </a>
         </div>
 
-        <!-- Projet Card -->
-        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="1200">
+        <!-- Project Card -->
+        <div class="glass-card p-6 glow-effect animate-on-scroll" data-aos="fade-up" data-aos-delay="1200">
           <h3 class="text-xl font-semibold mb-2 text-white">444 Count</h3>
           <p class="text-gray-400 mb-4">Un site pour voir le nombre de followers en temps réel avec une interface élégante.</p>
           <div class="flex flex-wrap gap-2 mb-4">
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">JavaScript</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">API</span>
+            <span class="text-xs px-3 py-1 bg-gray-900/50 rounded-full text-gray-300">UI/UX</span>
           </div>
           <a href="https://444-count.vercel.app/" target="_blank" 
              class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
@@ -360,111 +393,21 @@
             </svg>
           </a>
         </div>
-
-        <!-- Projet Card -->
-        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="1400">
-          <h3 class="text-xl font-semibold mb-2 text-white">MrBeast Latest Video</h3>
-          <p class="text-gray-400 mb-4">Statistiques en temps réel sur la dernière vidéo de MrBeast avec une interface intuitive.</p>
-          <div class="flex flex-wrap gap-2 mb-4">
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API YouTube</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
-          </div>
-          <a href="https://mr-beast-latest-video-statify.vercel.app/" target="_blank" 
-             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
-            Voir le projet
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </a>
-        </div>
-
-        <!-- Projet Card -->
-        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="1600">
-          <h3 class="text-xl font-semibold mb-2 text-white">MrBeast Latest Short</h3>
-          <p class="text-gray-400 mb-4">Statistiques en temps réel sur le dernier short de MrBeast avec une interface intuitive.</p>
-          <div class="flex flex-wrap gap-2 mb-4">
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API YouTube</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
-          </div>
-          <a href="https://mr-beast-latest-short-statify.vercel.app/" target="_blank" 
-             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
-            Voir le projet
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </a>
-        </div>
-
-        <!-- Projet Card -->
-        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="1800">
-          <h3 class="text-xl font-semibold mb-2 text-white">Fast Count Status</h3>
-          <p class="text-gray-400 mb-4">Statut en temps réel pour Fast Count avec une interface claire et réactive.</p>
-          <div class="flex flex-wrap gap-2 mb-4">
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
-          </div>
-          <a href="https://fast-count-status.vercel.app/" target="_blank" 
-             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
-            Voir le projet
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </a>
-        </div>
-
-        <!-- Projet Card -->
-        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="2000">
-          <h3 class="text-xl font-semibold mb-2 text-white">Top 50 Customizable</h3>
-          <p class="text-gray-400 mb-4">Un top 50 personnalisable avec une interface intuitive et moderne.</p>
-          <div class="flex flex-wrap gap-2 mb-4">
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">JavaScript</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">API</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">UI/UX</span>
-          </div>
-          <a href="https://top-50-fysc.vercel.app/" target="_blank" 
-             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
-            Voir le projet
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </a>
-        </div>
-
-        <!-- Projet Card -->
-        <div class="neu-card p-6 glow-effect" data-aos="fade-up" data-aos-delay="2200">
-          <h3 class="text-xl font-semibold mb-2 text-white">GraphStats YouTube Channel</h3>
-          <p class="text-gray-400 mb-4">Découvrez ma chaîne YouTube dédiée aux statistiques et aux projets innovants.</p>
-          <div class="flex flex-wrap gap-2 mb-4">
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">YouTube</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">Statistiques</span>
-            <span class="text-xs px-3 py-1 bg-gray-900 rounded-full text-gray-300">Projets</span>
-          </div>
-          <a href="https://www.youtube.com/@GraphStats-Official" target="_blank" 
-             class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition">
-            Voir la chaîne
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </a>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- Stack -->
+  <!-- Stack Section -->
   <section class="px-6 py-24 bg-gradient-to-b from-black to-gray-900/50" id="stack">
     <div class="max-w-7xl mx-auto">
-      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text">Ma stack technique</h2>
-      <p class="text-xl text-gray-400 max-w-3xl mx-auto text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text animate-on-scroll">Ma stack technique</h2>
+      <p class="text-xl text-gray-400 max-w-3xl mx-auto text-center mb-16 animate-on-scroll">
         Les technologies que j'utilise pour créer des expériences modernes et performantes.
       </p>
       
       <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
         <!-- Tech Item -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" class="w-full h-full">
           </div>
@@ -472,7 +415,7 @@
         </div>
         
         <!-- Tech Item -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll" data-aos-delay="100">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" class="w-full h-full">
           </div>
@@ -480,23 +423,23 @@
         </div>
         
         <!-- Tech Item -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll" data-aos-delay="200">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="w-full h-full">
           </div>
           <span class="text-white font-medium">JavaScript</span>
         </div>
 
-        <!-- TypeScript -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <!-- Tech Item -->
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll" data-aos-delay="300">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript" class="w-full h-full">
           </div>
           <span class="text-white font-medium">TypeScript</span>
         </div>
 
-        <!-- Java -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <!-- Tech Item -->
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll" data-aos-delay="400">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java" class="w-full h-full">
           </div>
@@ -504,7 +447,7 @@
         </div>
         
         <!-- Tech Item -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll" data-aos-delay="500">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js" class="w-full h-full">
           </div>
@@ -512,7 +455,7 @@
         </div>
         
         <!-- Tech Item -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll" data-aos-delay="600">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" class="w-full h-full">
           </div>
@@ -520,7 +463,7 @@
         </div>
         
         <!-- Tech Item -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll" data-aos-delay="700">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Tailwind_CSS_Logo.svg/2560px-Tailwind_CSS_Logo.svg.png" alt="Tailwind CSS" class="w-full h-full">
           </div>
@@ -528,7 +471,7 @@
         </div>
 
         <!-- Tech Item -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll" data-aos-delay="800">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg" alt="Google Cloud" class="w-full h-full">
           </div>
@@ -536,7 +479,7 @@
         </div>
         
         <!-- Tech Item -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll" data-aos-delay="900">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/2560px-Amazon_Web_Services_Logo.svg.png" alt="AWS" class="w-full h-10 object-contain">
           </div>
@@ -544,7 +487,7 @@
         </div>
         
         <!-- Tech Item -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll" data-aos-delay="1000">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux" class="w-full h-full">
           </div>
@@ -552,7 +495,7 @@
         </div>
         
         <!-- Tech Item -->
-        <div class="flex flex-col items-center neu-card p-6 glow-effect hover:border-indigo-500/30 transition">
+        <div class="flex flex-col items-center glass-card p-6 glow-effect hover:border-indigo-500/30 transition animate-on-scroll" data-aos-delay="1100">
           <div class="w-16 h-16 mb-4 flex items-center justify-center">
             <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg" alt="Windows" class="w-full h-full">
           </div>
@@ -562,15 +505,15 @@
     </div>
   </section>
 
-  <!-- Contact -->
+  <!-- Contact Section -->
   <section class="px-6 py-24 relative overflow-hidden" id="contact">
     <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/10 to-black/80"></div>
     
     <div class="max-w-4xl mx-auto relative">
-      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text" data-aos="fade-up" data-contact-title></h2>
-      <p class="text-xl text-gray-400 max-w-2xl mx-auto text-center mb-16" data-aos="fade-up" data-aos-delay="100" data-contact-description></p>
+      <h2 class="text-4xl md:text-5xl font-bold mb-6 text-center gradient-text animate-on-scroll" data-aos="fade-up" data-contact-title></h2>
+      <p class="text-xl text-gray-400 max-w-2xl mx-auto text-center mb-16 animate-on-scroll" data-aos="fade-up" data-aos-delay="100" data-contact-description></p>
       
-      <form class="neu-card p-8 glow-effect" data-aos="fade-up" data-aos-delay="200">
+      <form class="glass-card p-8 glow-effect animate-on-scroll" data-aos="fade-up" data-aos-delay="200">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label for="name" class="block text-sm font-medium text-gray-300 mb-2" data-contact-name></label>
@@ -598,13 +541,13 @@
   <footer class="px-6 py-12 border-t border-gray-900 bg-black/50">
     <div class="max-w-7xl mx-auto">
       <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="mb-6 md:mb-0">
+        <div class="mb-6 md:mb-0 animate-on-scroll">
           <a href="#" class="text-2xl font-bold gradient-text">GraphStats</a>
           <p class="text-gray-500 mt-2" data-footer-text></p>
         </div>
         
-        <div class="flex space-x-6">
-          <a href="https://github.com/GraphStats" target="_blank" class="text-gray-400 hover:text-white transition">
+        <div class="flex space-x-6 animate-on-scroll">
+          <a href="https://github.com/GraphStats" target="_blank" class="text-gray-400 hover:text-white transition transform hover:scale-110">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
             </svg>
@@ -612,7 +555,7 @@
         </div>
       </div>
       
-      <div class="mt-12 pt-8 border-t border-gray-900 flex flex-col md:flex-row justify-between items-center">
+      <div class="mt-12 pt-8 border-t border-gray-900 flex flex-col md:flex-row justify-between items-center animate-on-scroll">
         <p class="text-gray-500 text-sm mb-4 md:mb-0">
           © 2025 GraphStats. Tous droits réservés.
         </p>
@@ -639,103 +582,22 @@
         document.querySelector(this.getAttribute('href')).scrollIntoView({
           behavior: 'smooth'
         });
-        
-        // Close mobile menu if open
-        if(!mobileMenu.classList.contains('hidden')) {
-          mobileMenu.classList.add('hidden');
-        }
       });
     });
 
-    // DND & Age Real-Time Update
-    // Set your birth date here (YYYY-MM-DDTHH:MM:SS)
-    const birthDate = new Date("2010-08-10T02:40:00");
-
-    function pad(n) { return n.toString().padStart(2, '0'); }
-
-    // Discord status color mapping
-    const statusColors = {
-      online: "#22c55e",   // green
-      dnd: "#ef4444",      // red
-      idle: "#f59e42",     // orange
-      offline: "#64748b"   // gray
-    };
-
-    // Update Discord status in the DOM
-    function updateDiscordStatus(status, customStatus) {
-      const dndDiv = document.getElementById('dnd-status');
-      let color = statusColors[status] || "#64748b";
-      let label = status;
-      if (status === "dnd") label = "Do Not Disturb";
-      else if (status === "online") label = "Online";
-      else if (status === "idle") label = "Idle";
-      else if (status === "offline") label = "Offline";
-      else label = status;
-      let html = `<span style="display:inline-flex;align-items:center;gap:6px;">
-        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color};"></span>
-        <b>${label}</b>
-      </span>`;
-      if (customStatus) {
-        html += `<div style="margin-top:2px;color:#a5b4fc;font-size:13px;word-break:break-word;">My Discord Status : ${customStatus}</div>`;
-      }
-      dndDiv.innerHTML = html;
-    }
-
-    // Fetch Discord status from Lanyard API
-    async function fetchDiscordStatus() {
-      try {
-        const res = await fetch('https://api.lanyard.rest/v1/users/1349053338364416020');
-        const data = await res.json();
-        let customStatus = null;
-        if (data && data.success && data.data) {
-          // Find activity of type 4 (custom status)
-          if (Array.isArray(data.data.activities)) {
-            const custom = data.data.activities.find(a => a.type === 4 && a.state);
-            if (custom && custom.state) customStatus = custom.state;
-          }
-          updateDiscordStatus(data.data.discord_status, customStatus);
-        } else {
-          updateDiscordStatus("offline");
+    // Intersection Observer for scroll animations
+    const animateElements = document.querySelectorAll('.animate-on-scroll');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('scale-in');
+          observer.unobserve(entry.target);
         }
-      } catch {
-        updateDiscordStatus("offline");
-      }
-    }
+      });
+    }, { threshold: 0.1 });
 
-    // Call every 2 seconds
-    setInterval(fetchDiscordStatus, 2000);
-    // Initial call
-    fetchDiscordStatus();
-
-    function updateDndAge() {
-      const now = new Date();
-      // UTC+1
-      const utc1 = new Date(now.getTime() + 60 * 60 * 1000);
-      // Format: June 28, 2025, 5:55:43
-      const monthsEn = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-      const day = utc1.getDate();
-      const month = monthsEn[utc1.getMonth()];
-      const year = utc1.getFullYear();
-      const h = pad(utc1.getHours());
-      const m = pad(utc1.getMinutes());
-      const s = pad(utc1.getSeconds());
-      document.getElementById('current-time').textContent = `my time (UTC+1): ${month} ${day}, ${year}, ${h}:${m}:${s}`;
-
-      // Age calculation (still based on real UTC time)
-      let diff = now - birthDate;
-      let ageDate = new Date(diff);
-      let years = ageDate.getUTCFullYear() - 1970;
-      let days = Math.floor(diff / (1000*60*60*24) - years*365.2425);
-      let hours = ageDate.getUTCHours();
-      let minutes = ageDate.getUTCMinutes();
-      let seconds = ageDate.getUTCSeconds();
-      document.getElementById('age-info').textContent =
-        `age: ${years} years, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
-    }
-
-    setInterval(updateDndAge, 1000);
-    updateDndAge();
-    </script>
+    animateElements.forEach(el => observer.observe(el));
+  </script>
 </body>
-</html>
 </html>
